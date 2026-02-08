@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>fuoriQuota</title>
+<link rel="manifest" href="manifest.json">
+<style>
+body {margin:0; font-family:-apple-system, BlinkMacSystemFont, sans-serif; background:#f2f2f7;}
+
+/* HEADER */
+header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 15px;
+  background:#fff;
+  border-bottom:1px solid #ddd;
+  font-weight:600;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+header .title {font-size:20px;}
+header .icons {display:flex; gap:12px;}
+header .icons button {
+  border:none; background:#fff; padding:8px; font-size:20px; cursor:pointer;
+}
+header .icons button.active {color:#007aff; font-weight:600;}
+
+/* HOME */
+.home-bg {
+  min-height: 82vh;
+  background-image: url("LogoFqUfficiale.png");
+  background-repeat: no-repeat;
+  background-position: center 50px; /* logo leggermente più in alto */
+  background-size: contain;
+  position: relative;
+  display: flex;
+  justify-content: flex-end; /* messaggio sempre in basso */
+  align-items: center;
+  padding-bottom: 40px;
+}
+.home-overlay {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(10px);
+  border-radius: 22px;
+  padding: 20px 40px;
+  text-align: center;
+  box-shadow: 0 6px 40px rgba(0,0,0,0.15);
+  max-width: 95%;
+}
+
+/* CARD */
+section {padding:15px; margin-top:10px;}
+.card {background:#fff; border-radius:16px; padding:15px; margin-bottom:15px; box-shadow:0 2px 6px rgba(0,0,0,0.08);}
+
+/* BUTTONS */
+input, button {border-radius:14px; border:1px solid #ddd; font-size:16px; padding:10px;}
+button.primary {background:linear-gradient(45deg,#007aff,#34c9ff); color:white; border:none; font-weight:600;}
+button.delete {background:linear-gradient(45deg,#ff3b30,#ff6b5c); color:white; border:none; font-weight:600;}
+button.small {padding:8px 14px; font-size:14px; cursor:pointer;}
+
+/* TABLE */
+table {width:100%; border-collapse:collapse; margin-top:10px;}
+th,td {padding:10px; border-bottom:1px solid #ddd; text-align:left;}
+td.right {text-align:right;}
+tr:hover {background:#f0f0f5; cursor:pointer;}
+
+/* MODAL */
+.modal {display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); justify-content:center; align-items:center;}
+.modal-content {background:#fff; border-radius:18px; padding:15px; width:90%; max-width:400px;}
+.modal-header {display:flex; justify-content:flex-end; gap:10px; margin-bottom:10px;}
+.modal-body {display:flex; flex-direction:column; gap:10px;}
+
+/* TOOLBAR REPORT */
+.report-toolbar{
+  display:flex;
+  gap:12px;
+  margin-bottom:18px;
+}
+.toolbar-btn{
+  flex:1;
+  padding:10px 14px;
+  border:none;
+  border-radius:14px;
+  font-size:15px;
+  font-weight:600;
+  background:linear-gradient(45deg,#007aff,#34c9ff);
+  color:white;
+  cursor:pointer;
+}
+
+/* REPORT STYLING */
+#totIncassi{color:green;font-weight:700;margin:4px 0;}
+#totSpese{color:red;font-weight:700;margin:4px 0;}
+#totUtile{color:blue;font-weight:700;margin:4px 0;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="title">fuoriQuota</div>
+  <div class="icons">
+    <button id="btnHome" class="active" onclick="showTab('home')">🏠</button>
+    <button id="btnConcerti" onclick="showTab('concerti')">🎵</button>
+    <button id="btnAcquisti" onclick="showTab('acquisti')">💰</button>
+    <button id="btnReport" onclick="showTab('report')">📊</button>
+  </div>
+</header>
+
+<!-- HOME -->
+<section id="home" class="home-bg">
+  <div class="home-overlay">
+    <h2>Benvenuto in fuoriQuota</h2>
+    <p>Gestisci concerti e spese in modo semplice.</p>
+  </div>
+</section>
+
+<!-- CONCERTI -->
+<section id="concerti" style="display:none">
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h3>Concerti</h3>
+      <button class="primary small" onclick="openModalConcerto()">+ Inserimento Concerto</button>
+    </div>
+    <table id="concertiTable"></table>
+  </div>
+</section>
+
+<!-- SPESE -->
+<section id="acquisti" style="display:none">
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h3>Spese</h3>
+      <button class="delete small" onclick="openModalSpesa()">+ Inserimento Spesa</button>
+    </div>
+    <table id="speseTable"></table>
+  </div>
+</section>
+
+<!-- REPORT -->
+<section id="report" style="display:none">
+  <div class="card">
+    <div class="report-toolbar">
+      <button class="toolbar-btn" onclick="exportExcel()">📄 Excel</button>
+      <button class="toolbar-btn" onclick="exportPDF()">🖨 PDF</button>
+      <button class="toolbar-btn" onclick="backupDati()">💾 Backup dati</button>
+      <button class="toolbar-btn" onclick="ripristinaDati()">📂 Ripristina dati</button>
+    </div>
+    <h3>Report Totale</h3>
+    <div id="totIncassi"></div>
+    <div id="totSpese"></div>
+    <div id="totUtile"></div>
+    <div id="riepilogoConcertiAnno" class="card" style="margin-top:10px;"></div>
+    <canvas id="chartIncassi" height="200" style="margin-top:20px;"></canvas>
+    <canvas id="chartConcertiAnno" height="200" style="margin-top:20px;"></canvas>
+  </div>
+</section>
+
+<!-- MODALI -->
+<div class="modal" id="modalConcerto">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button class="primary small" onclick="saveConcerto()">💾 Salva</button>
+      <button class="delete small" onclick="deleteConcertoModal()">🗑 Cancella</button>
+      <button class="small" onclick="closeModal('modalConcerto')">❌ Chiudi</button>
+    </div>
+    <div class="modal-body">
+      <input id="c_data" type="date">
+      <input id="c_paese" placeholder="Paese">
+      <input id="c_via" placeholder="Via">
+      <input id="c_locale" placeholder="Locale">
+      <input id="c_incasso" type="number" placeholder="Incasso €">
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modalSpesa">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button class="primary small" onclick="saveSpesa()">💾 Salva</button>
+      <button class="delete small" onclick="deleteSpesaModal()">🗑 Cancella</button>
+      <button class="small" onclick="closeModal('modalSpesa')">❌ Chiudi</button>
+    </div>
+    <div class="modal-body">
+      <input id="s_data" type="date">
+      <input id="s_desc" placeholder="Descrizione">
+      <input id="s_note" placeholder="Note">
+      <input id="s_importo" type="number" placeholder="Importo">
+    </div>
+  </div>
+</div>
+
+<!-- Input nascosto per ripristino dati -->
+<input type="file" id="fileInput" style="display:none" accept=".json">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+// Dati
+let concerti = JSON.parse(localStorage.getItem("concerti")||"[]");
+let spese = JSON.parse(localStorage.getItem("spese")||"[]");
+let editingConcertoIndex = null;
+let editingSpesaIndex = null;
+
+// Navigazione
+function showTab(tab){
+  ["home","concerti","acquisti","report"].forEach(t=>document.getElementById(t).style.display="none");
+  document.getElementById(tab).style.display="block";
+  ["btnHome","btnConcerti","btnAcquisti","btnReport"].forEach(b=>document.getElementById(b).classList.remove("active"));
+  if(tab=="home") btnHome.classList.add("active");
+  if(tab=="concerti") btnConcerti.classList.add("active");
+  if(tab=="acquisti") btnAcquisti.classList.add("active");
+  if(tab=="report") btnReport.classList.add("active");
+  render();
+}
+
+// MODALI
+function openModal(id){ document.getElementById(id).style.display="flex"; }
+function closeModal(id){ document.getElementById(id).style.display="none"; render(); }
+
+// Concerti
+function openModalConcerto(index=null){
+  editingConcertoIndex=index;
+  if(index!==null){
+    let c=concerti[index];
+    c_data.value=c.data; c_paese.value=c.paese; c_via.value=c.via; c_locale.value=c.locale; c_incasso.value=c.incasso.toFixed(2);
+  } else { c_data.value=c_paese.value=c_via.value=c_locale.value=c_incasso.value=''; }
+  openModal("modalConcerto");
+}
+function saveConcerto(){
+  let obj={data:c_data.value,paese:c_paese.value,via:c_via.value,locale:c_locale.value,incasso:Number(c_incasso.value)};
+  if(editingConcertoIndex!==null) concerti[editingConcertoIndex]=obj;
+  else concerti.push(obj);
+  concerti.sort((a,b)=> new Date(b.data)-new Date(a.data)); // decrescente
+  closeModal("modalConcerto"); save();
+}
+function deleteConcertoModal(){
+  if(editingConcertoIndex!==null) concerti.splice(editingConcertoIndex,1);
+  closeModal("modalConcerto"); save();
+}
+
+// Spese negative
+function openModalSpesa(index=null){
+  editingSpesaIndex=index;
+  if(index!==null){
+    let s=spese[index];
+    s_data.value=s.data; s_desc.value=s.desc; s_note.value=s.note; s_importo.value=Math.abs(s.importo).toFixed(2);
+  } else { s_data.value=s_desc.value=s_note.value=s_importo.value=''; }
+  openModal("modalSpesa");
+}
+function saveSpesa(){
+  let importo = Number(s_importo.value);
+  if(importo>0) importo=-importo;
+  let obj={data:s_data.value,desc:s_desc.value,note:s_note.value,importo:importo};
+  if(editingSpesaIndex!==null) spese[editingSpesaIndex]=obj;
+  else spese.push(obj);
+  spese.sort((a,b)=> new Date(b.data)-new Date(a.data)); // decrescente
+  closeModal("modalSpesa"); save();
+}
+function deleteSpesaModal(){
+  if(editingSpesaIndex!==null) spese.splice(editingSpesaIndex,1);
+  closeModal("modalSpesa"); save();
+}
+
+// Render
+function renderConcerti(){
+  let html="<tr><th>Data</th><th>Paese</th><th>Locale</th><th class='right'>Incasso</th></tr>";
+  concerti.forEach((c,i)=>{ html+=`<tr onclick="openModalConcerto(${i})"><td>${c.data}</td><td>${c.paese}</td><td>${c.locale}</td><td class='right'>${c.incasso.toFixed(2)}€</td></tr>`; });
+  concertiTable.innerHTML=html;
+}
+function renderSpese(){
+  let html="<tr><th>Data</th><th>Descrizione</th><th class='right'>Importo</th></tr>";
+  spese.forEach((s,i)=>{ html+=`<tr onclick="openModalSpesa(${i})"><td>${s.data}</td><td>${s.desc}</td><td class='right'>${s.importo.toFixed(2)}€</td></tr>`; });
+  speseTable.innerHTML=html;
+}
+function renderReport(){
+  let incassi = concerti.reduce((s,c)=>s+c.incasso,0);
+  let uscite = spese.reduce((s,c)=>s+c.importo,0);
+  let saldo = incassi + uscite;
+  totIncassi.innerText = "Totale Entrate: " + incassi.toFixed(2) + "€";
+  totSpese.innerText = "Totale Spese: " + uscite.toFixed(2) + "€";
+  totUtile.innerText = "Saldo Netto: " + saldo.toFixed(2) + "€";
+
+  // Concerti per anno
+  let map={};
+  concerti.forEach(c=>{ let a=new Date(c.data).getFullYear(); if(!map[a]) map[a]=0; map[a]++; });
+  let html="<h4>Concerti per anno</h4>";
+  Object.keys(map).sort().forEach(a=>{ html+=`<div>${a}: ${map[a]} concerti</div>`; });
+  riepilogoConcertiAnno.innerHTML=html;
+}
+
+function save(){
+  localStorage.setItem("concerti",JSON.stringify(concerti));
+  localStorage.setItem("spese",JSON.stringify(spese));
+  render();
+}
+function render(){ renderConcerti(); renderSpese(); renderReport(); }
+render();
+
+// EXPORT
+function exportExcel(){
+  let rows=[["Data","Tipo","Descrizione","Luogo/Note","Importo"]];
+  concerti.forEach(c=>rows.push([c.data,"Concerto",c.locale,c.paese+" "+c.via,c.incasso.toFixed(2)]));
+  spese.forEach(s=>rows.push([s.data,"Spesa",s.desc,s.note,s.importo.toFixed(2)]));
+  rows.sort((a,b)=> new Date(b[0]) - new Date(a[0]));
+  let csv=rows.map(r=>r.join(";")).join("\n");
+  let blob=new Blob([csv],{type:"text/csv"});
+  let url=URL.createObjectURL(blob);
+  let a=document.createElement("a");
+  a.href=url; a.download="fuoriQuota.csv";
+  a.click();
+}
+
+async function exportPDF(){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.setFontSize(18); doc.text("fuoriQuota - Report",105,15,{align:"center"});
+  let y=30; doc.setFontSize(10);
+  let rows=[];
+  concerti.forEach(c=>rows.push([c.data,"Concerto",c.locale,c.paese+" "+c.via,c.incasso.toFixed(2)+"€"]));
+  spese.forEach(s=>rows.push([s.data,"Spesa",s.desc,s.note,s.importo.toFixed(2)+"€"]));
+  rows.sort((a,b)=> new Date(a[0]) - new Date(b[0]));
+  rows.forEach(r=>{ if(y>280){ doc.addPage(); y=20; } doc.text(r.join(" | "),10,y); y+=7; });
+  doc.save("fuoriQuota_report.pdf");
+}
+
+// BACKUP DATI
+function backupDati(){
+  const dati={concerti,spese};
+  const blob=new Blob([JSON.stringify(dati)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download="fuoriQuota_backup.json";
+  a.click();
+}
+
+// RIPRISTINA DATI
+function ripristinaDati(){
+  const fileInput = document.getElementById("fileInput");
+  fileInput.replaceWith(fileInput.cloneNode(true));
+  const nuovoInput = document.getElementById("fileInput");
+  nuovoInput.addEventListener("change",(event)=>{
+    const file = event.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (e)=>{
+      try{
+        const dati = JSON.parse(e.target.result);
+        if(!dati.concerti || !dati.spese) throw "File non valido";
+        concerti=dati.concerti;
+        spese=dati.spese;
+        save();
+        alert("Dati ripristinati con successo!");
+      }catch(err){ alert("Errore: file non valido."); }
+    };
+    reader.readAsText(file);
+    nuovoInput.value="";
+  });
+  nuovoInput.click();
+}
+</script>
+
+</body>
+</html>

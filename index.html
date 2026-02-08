@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>fuoriQuota</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="title">fuoriQuota</div>
+  <div class="icons">
+    <button id="btnHome" class="active" onclick="showTab('home')">🏠</button>
+    <button id="btnConcerti" onclick="showTab('concerti')">🎵</button>
+    <button id="btnAcquisti" onclick="showTab('acquisti')">💰</button>
+    <button id="btnReport" onclick="showTab('report')">📊</button>
+  </div>
+</header>
+
+<!-- HOME -->
+<section id="home" class="home-bg">
+  <div class="home-overlay">
+    <h2>Benvenuto in fuoriQuota</h2>
+    <p>Gestisci concerti e spese in modo semplice.</p>
+  </div>
+</section>
+
+<!-- CONCERTI -->
+<section id="concerti" style="display:none">
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h3>Concerti</h3>
+      <button class="primary small" onclick="openModalConcerto()">+ Inserimento Concerto</button>
+    </div>
+    <table id="concertiTable"></table>
+  </div>
+</section>
+
+<!-- SPESE -->
+<section id="acquisti" style="display:none">
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h3>Spese</h3>
+      <button class="primary small" onclick="openModalSpesa()">+ Inserimento Spesa</button>
+    </div>
+    <table id="speseTable"></table>
+  </div>
+</section>
+
+<!-- REPORT -->
+<section id="report" style="display:none">
+  <div class="card">
+    <div class="report-toolbar">
+      <button class="toolbar-btn" onclick="exportExcel()">📄 Excel</button>
+      <button class="toolbar-btn" onclick="exportPDF()">🖨 PDF</button>
+    </div>
+    <h3>Report Totale</h3>
+    <div id="totIncassi"></div>
+    <div id="totSpese"></div>
+    <div id="totUtile"></div>
+    <div id="riepilogoConcertiAnno" class="card" style="margin-top:10px;"></div>
+    <canvas id="chartIncassi" height="200" style="margin-top:20px;"></canvas>
+    <canvas id="chartConcertiAnno" height="200" style="margin-top:20px;"></canvas>
+  </div>
+</section>
+
+<!-- MODALI CONCERTI & SPESE -->
+<div class="modal" id="modalConcerto">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button class="primary small" onclick="saveConcerto()">💾 Salva</button>
+      <button class="delete small" onclick="deleteConcertoModal()">🗑 Cancella</button>
+      <button class="small" onclick="closeModal('modalConcerto')">❌ Chiudi</button>
+    </div>
+    <div class="modal-body">
+      <input id="c_data" type="date">
+      <input id="c_paese" placeholder="Paese">
+      <input id="c_via" placeholder="Via">
+      <input id="c_locale" placeholder="Locale">
+      <input id="c_incasso" type="number" placeholder="Incasso €">
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modalSpesa">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button class="primary small" onclick="saveSpesa()">💾 Salva</button>
+      <button class="delete small" onclick="deleteSpesaModal()">🗑 Cancella</button>
+      <button class="small" onclick="closeModal('modalSpesa')">❌ Chiudi</button>
+    </div>
+    <div class="modal-body">
+      <input id="s_data" type="date">
+      <input id="s_desc" placeholder="Descrizione">
+      <input id="s_note" placeholder="Note">
+      <input id="s_importo" type="number" placeholder="Importo">
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="script.js"></script>
+
+<script>
+// Registrazione Service Worker
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('service-worker.js').then(()=>console.log("Service Worker registrato"));
+}
+</script>
+
+</body>
+</html>
