@@ -1,43 +1,30 @@
-const CACHE_NAME = 'fuoriQuota-cache-v1';
+const CACHE_NAME = 'fuoriQuota-cache-v2';
 const FILES_TO_CACHE = [
   'gestionale.html',
-  'style.css',
-  'script.js',
-  'LogoFqUfficiale.png',
-  'manifest.json'
+  'manifest.json',
+  'icon-192.png',
+  'icon-512.png',
+  'LogoFqUfficiale.png'
 ];
 
-// INSTALL
 self.addEventListener('install', evt => {
   evt.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      console.log('Caching app files');
-      return cache.addAll(FILES_TO_CACHE);
-    })
+    caches.open(CACHE_NAME).then(cache => cache.addAll(FILES_TO_CACHE))
   );
   self.skipWaiting();
 });
 
-// ACTIVATE
 self.addEventListener('activate', evt => {
   evt.waitUntil(
-    caches.keys().then(keyList => {
-      return Promise.all(keyList.map(key => {
-        if(key !== CACHE_NAME){
-          console.log('Removing old cache', key);
-          return caches.delete(key);
-        }
-      }));
-    })
+    caches.keys().then(keys =>
+      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+    )
   );
   self.clients.claim();
 });
 
-// FETCH
 self.addEventListener('fetch', evt => {
   evt.respondWith(
-    caches.match(evt.request).then(resp => {
-      return resp || fetch(evt.request);
-    })
+    caches.match(evt.request).then(resp => resp || fetch(evt.request))
   );
 });
