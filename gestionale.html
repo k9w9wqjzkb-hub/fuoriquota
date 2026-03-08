@@ -2,370 +2,1055 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>fuoriQuota</title>
 <link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-body {margin:0; font-family:-apple-system, BlinkMacSystemFont, sans-serif; background:#f2f2f7;}
+:root {
+  --orange: #FF6B00;
+  --orange-light: #FF8C33;
+  --green: #2DB34A;
+  --red: #E32B2B;
+  --black: #0D0D0D;
+  --dark: #1A1A1A;
+  --dark2: #242424;
+  --dark3: #2E2E2E;
+  --text: #F0F0F0;
+  --text-muted: #888;
+  --bg: #111111;
+  --card: #1C1C1C;
+  --border: rgba(255,255,255,0.08);
+  --radius: 16px;
+  --header-h: 62px;
+}
 
-/* HEADER */
+* { box-sizing: border-box; margin:0; padding:0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+
+/* ===== HEADER ===== */
 header {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:12px 15px;
-  background:#fff;
-  border-bottom:1px solid #ddd;
-  font-weight:600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 18px;
+  height: var(--header-h);
+  background: var(--black);
+  border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
   z-index: 1000;
 }
-header .title {font-size:20px;}
-header .icons {display:flex; gap:12px;}
-header .icons button {
-  border:none; background:#fff; padding:8px; font-size:20px; cursor:pointer;
-}
-header .icons button.active {color:#007aff; font-weight:600;}
 
-/* HOME */
-.home-bg {
-  min-height: 82vh;
-  background-image: url("LogoFqUfficiale.png");
-  background-repeat: no-repeat;
-  background-position: center 50px; /* logo leggermente più in alto */
-  background-size: contain;
-  position: relative;
+.header-logo {
   display: flex;
-  justify-content: flex-end; /* messaggio sempre in basso */
   align-items: center;
-  padding-bottom: 40px;
+  gap: 10px;
 }
-.home-overlay {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(255,255,255,0.9);
-  backdrop-filter: blur(10px);
-  border-radius: 22px;
-  padding: 20px 40px;
+.header-logo span {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 28px;
+  letter-spacing: 1px;
+  background: linear-gradient(90deg, var(--orange), var(--orange-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ===== BOTTOM NAV ===== */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--black);
+  border-top: 1px solid var(--border);
+  display: flex;
+  z-index: 999;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.nav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  gap: 4px;
+  color: var(--text-muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.nav-btn .nav-icon { font-size: 22px; }
+.nav-btn.active { color: var(--orange); }
+.nav-btn.active .nav-icon {
+  filter: drop-shadow(0 0 6px rgba(255,107,0,0.6));
+}
+
+/* ===== SECTIONS ===== */
+section {
+  padding: 16px;
+  animation: fadeIn 0.25s ease;
+}
+@keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+/* ===== HOME ===== */
+#home {
+  padding: 0;
+  min-height: calc(100vh - var(--header-h) - 80px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at 50% 30%, rgba(255,107,0,0.12) 0%, transparent 70%),
+              radial-gradient(ellipse at 20% 80%, rgba(45,179,74,0.06) 0%, transparent 50%),
+              var(--bg);
+  position: relative;
+  overflow: hidden;
+}
+
+.home-vinyl {
+  width: min(320px, 85vw);
+  height: min(320px, 85vw);
+  border-radius: 50%;
+  border: 3px solid var(--orange);
+  box-shadow: 0 0 60px rgba(255,107,0,0.3), inset 0 0 40px rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 32px;
+  animation: spin 30s linear infinite;
+  position: relative;
+}
+.home-vinyl img {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+  border-radius: 50%;
+  animation: spin 30s linear infinite reverse;
+}
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+.home-info {
   text-align: center;
-  box-shadow: 0 6px 40px rgba(0,0,0,0.15);
-  max-width: 95%;
+  padding: 0 20px;
+}
+.home-info h1 {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 42px;
+  letter-spacing: 2px;
+  background: linear-gradient(90deg, var(--orange), #FFB366);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+.home-info p {
+  color: var(--text-muted);
+  font-size: 15px;
+  margin-bottom: 28px;
 }
 
-/* CARD */
-section {padding:15px; margin-top:10px;}
-.card {background:#fff; border-radius:16px; padding:15px; margin-bottom:15px; box-shadow:0 2px 6px rgba(0,0,0,0.08);}
-
-/* BUTTONS */
-input, button {border-radius:14px; border:1px solid #ddd; font-size:16px; padding:10px;}
-button.primary {background:linear-gradient(45deg,#007aff,#34c9ff); color:white; border:none; font-weight:600;}
-button.delete {background:linear-gradient(45deg,#ff3b30,#ff6b5c); color:white; border:none; font-weight:600;}
-button.small {padding:8px 14px; font-size:14px; cursor:pointer;}
-
-/* TABLE */
-table {width:100%; border-collapse:collapse; margin-top:10px;}
-th,td {padding:10px; border-bottom:1px solid #ddd; text-align:left;}
-td.right {text-align:right;}
-tr:hover {background:#f0f0f5; cursor:pointer;}
-
-/* MODAL */
-.modal {display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); justify-content:center; align-items:center;}
-.modal-content {background:#fff; border-radius:18px; padding:15px; width:90%; max-width:400px;}
-.modal-header {display:flex; justify-content:flex-end; gap:10px; margin-bottom:10px;}
-.modal-body {display:flex; flex-direction:column; gap:10px;}
-
-/* TOOLBAR REPORT */
-.report-toolbar{
-  display:flex;
-  gap:12px;
-  margin-bottom:18px;
+.home-stats {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
 }
-.toolbar-btn{
-  flex:1;
-  padding:10px 14px;
-  border:none;
-  border-radius:14px;
-  font-size:15px;
-  font-weight:600;
-  background:linear-gradient(45deg,#007aff,#34c9ff);
-  color:white;
-  cursor:pointer;
+.home-stat {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 20px;
+  text-align: center;
+  min-width: 100px;
+}
+.home-stat .stat-val {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 28px;
+  color: var(--orange);
+  display: block;
+}
+.home-stat .stat-lbl {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-/* REPORT STYLING */
-#totIncassi{color:green;font-weight:700;margin:4px 0;}
-#totSpese{color:red;font-weight:700;margin:4px 0;}
-#totUtile{color:blue;font-weight:700;margin:4px 0;}
+/* ===== CARDS ===== */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 14px;
+  border: 1px solid var(--border);
+}
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.card-header h3 {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 22px;
+  letter-spacing: 1px;
+  color: var(--text);
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+  border: none;
+  border-radius: 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 9px 16px;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  white-space: nowrap;
+}
+.btn:active { transform: scale(0.97); }
+.btn-primary {
+  background: linear-gradient(135deg, var(--orange), var(--orange-light));
+  color: white;
+}
+.btn-delete {
+  background: linear-gradient(135deg, var(--red), #FF5555);
+  color: white;
+}
+.btn-ghost {
+  background: var(--dark3);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+/* ===== TABLE ===== */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; margin-top: 4px; font-size: 14px; }
+th {
+  text-align: left;
+  padding: 8px 10px;
+  color: var(--text-muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+}
+td {
+  padding: 12px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: var(--text);
+}
+tr:hover td { background: rgba(255,107,0,0.05); cursor: pointer; }
+.td-right { text-align: right; font-weight: 600; }
+.td-green { color: var(--green); }
+.td-red { color: var(--red); }
+.td-muted { color: var(--text-muted); font-size: 13px; }
+
+.tfoot td {
+  font-weight: 700;
+  color: var(--orange);
+  font-family: 'Bebas Neue', cursive;
+  font-size: 16px;
+  border-top: 1px solid var(--border);
+  border-bottom: none;
+}
+
+/* ===== EMPTY STATE ===== */
+.empty-state {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--text-muted);
+}
+.empty-state .empty-icon { font-size: 40px; margin-bottom: 8px; }
+
+/* ===== MODAL ===== */
+.modal {
+  display: none;
+  position: fixed; top:0; left:0; width:100%; height:100%;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  justify-content: center;
+  align-items: flex-end;
+  z-index: 2000;
+}
+.modal.open { display: flex; }
+.modal-content {
+  background: var(--dark2);
+  border-radius: 24px 24px 0 0;
+  padding: 20px 20px calc(20px + env(safe-area-inset-bottom));
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  border-top: 1px solid var(--border);
+  animation: slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+.modal-handle {
+  width: 36px; height: 4px;
+  background: var(--dark3);
+  border-radius: 2px;
+  margin: 0 auto 16px;
+}
+.modal-title {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 24px;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+  color: var(--orange);
+}
+.modal-body { display: flex; flex-direction: column; gap: 10px; }
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+.modal-actions .btn { flex: 1; padding: 12px; font-size: 15px; }
+
+/* ===== INPUTS ===== */
+input[type="text"], input[type="number"], input[type="date"] {
+  width: 100%;
+  background: var(--dark3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  padding: 12px 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  -webkit-appearance: none;
+  color-scheme: dark;
+}
+input:focus { border-color: var(--orange); }
+input::placeholder { color: var(--text-muted); }
+.input-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+.input-group { display: flex; flex-direction: column; }
+
+/* ===== REPORT ===== */
+.report-kpi {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.kpi-card {
+  background: var(--dark3);
+  border-radius: 14px;
+  padding: 14px 10px;
+  text-align: center;
+  border: 1px solid var(--border);
+}
+.kpi-card .kpi-val {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 20px;
+  display: block;
+  margin-bottom: 4px;
+}
+.kpi-card .kpi-lbl {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+}
+.kpi-green .kpi-val { color: var(--green); }
+.kpi-red .kpi-val { color: var(--red); }
+.kpi-blue .kpi-val { color: #4DA6FF; }
+
+.toolbar-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.toolbar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 11px;
+  border: none;
+  border-radius: 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--dark3);
+  color: var(--text);
+  border: 1px solid var(--border);
+  transition: background 0.2s;
+}
+.toolbar-btn:hover { background: var(--dark2); }
+.toolbar-btn.accent {
+  background: linear-gradient(135deg, var(--orange), var(--orange-light));
+  color: white;
+  border: none;
+}
+
+.anno-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--dark3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+.anno-pill strong { color: var(--orange); }
+
+.chart-title {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 18px;
+  letter-spacing: 1px;
+  margin: 20px 0 10px;
+  color: var(--text-muted);
+}
+
+/* ===== FILTER BAR ===== */
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  margin-bottom: 12px;
+  scrollbar-width: none;
+}
+.filter-bar::-webkit-scrollbar { display: none; }
+.filter-chip {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--dark3);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.filter-chip.active {
+  background: var(--orange);
+  color: white;
+  border-color: var(--orange);
+}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="title">fuoriQuota</div>
-  <div class="icons">
-    <button id="btnHome" class="active" onclick="showTab('home')">🏠</button>
-    <button id="btnConcerti" onclick="showTab('concerti')">🎵</button>
-    <button id="btnAcquisti" onclick="showTab('acquisti')">💰</button>
-    <button id="btnReport" onclick="showTab('report')">📊</button>
+  <div class="header-logo">
+    <img src="LogoFqUfficiale.png" style="height:36px;width:36px;object-fit:contain;border-radius:50%;" alt="logo">
+    <span>fuoriQuota</span>
   </div>
 </header>
 
 <!-- HOME -->
-<section id="home" class="home-bg">
-  <div class="home-overlay">
-    <h2>Benvenuto in fuoriQuota</h2>
-    <p>Gestisci concerti e spese in modo semplice.</p>
+<section id="home">
+  <div class="home-vinyl">
+    <img src="LogoFqUfficiale.png" alt="logo">
+  </div>
+  <div class="home-info">
+    <h1>fuoriQuota</h1>
+    <p>Musica Italiana · Dal 2012</p>
+    <div class="home-stats">
+      <div class="home-stat">
+        <span class="stat-val" id="hs-concerti">0</span>
+        <span class="stat-lbl">Concerti</span>
+      </div>
+      <div class="home-stat">
+        <span class="stat-val" id="hs-incasso">0€</span>
+        <span class="stat-lbl">Incassi</span>
+      </div>
+      <div class="home-stat">
+        <span class="stat-val" id="hs-saldo" style="color:var(--green)">0€</span>
+        <span class="stat-lbl">Saldo</span>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- CONCERTI -->
 <section id="concerti" style="display:none">
   <div class="card">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <h3>Concerti</h3>
-      <button class="primary small" onclick="openModalConcerto()">+ Inserimento Concerto</button>
+    <div class="card-header">
+      <h3>🎵 Concerti</h3>
+      <button class="btn btn-primary" onclick="openModalConcerto()">+ Aggiungi</button>
     </div>
-    <table id="concertiTable"></table>
+    <div class="filter-bar" id="filterConcerti">
+      <div class="filter-chip active" data-anno="tutti" onclick="setFilterConcerti('tutti',this)">Tutti</div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Data</th>
+          <th>Locale</th>
+          <th>Paese</th>
+          <th class="td-right">Incasso</th>
+        </tr></thead>
+        <tbody id="concertiBody"></tbody>
+        <tfoot id="concertiFoot"></tfoot>
+      </table>
+    </div>
+    <div id="concertiEmpty" class="empty-state" style="display:none">
+      <div class="empty-icon">🎸</div>
+      <div>Nessun concerto registrato</div>
+    </div>
   </div>
 </section>
 
 <!-- SPESE -->
 <section id="acquisti" style="display:none">
   <div class="card">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <h3>Spese</h3>
-      <button class="delete small" onclick="openModalSpesa()">+ Inserimento Spesa</button>
+    <div class="card-header">
+      <h3>💸 Spese</h3>
+      <button class="btn btn-delete" onclick="openModalSpesa()">+ Aggiungi</button>
     </div>
-    <table id="speseTable"></table>
+    <div class="filter-bar" id="filterSpese">
+      <div class="filter-chip active" data-anno="tutti" onclick="setFilterSpese('tutti',this)">Tutti</div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Data</th>
+          <th>Descrizione</th>
+          <th>Note</th>
+          <th class="td-right">Importo</th>
+        </tr></thead>
+        <tbody id="speseBody"></tbody>
+        <tfoot id="speseFoot"></tfoot>
+      </table>
+    </div>
+    <div id="speseEmpty" class="empty-state" style="display:none">
+      <div class="empty-icon">🧾</div>
+      <div>Nessuna spesa registrata</div>
+    </div>
   </div>
 </section>
 
 <!-- REPORT -->
 <section id="report" style="display:none">
-  <div class="card">
-    <div class="report-toolbar">
-      <button class="toolbar-btn" onclick="exportExcel()">📄 Excel</button>
-      <button class="toolbar-btn" onclick="exportPDF()">🖨 PDF</button>
-      <button class="toolbar-btn" onclick="backupDati()">💾 Backup dati</button>
-      <button class="toolbar-btn" onclick="ripristinaDati()">📂 Ripristina dati</button>
-    </div>
-    <h3>Report Totale</h3>
-    <div id="totIncassi"></div>
-    <div id="totSpese"></div>
-    <div id="totUtile"></div>
-    <div id="riepilogoConcertiAnno" class="card" style="margin-top:10px;"></div>
-    <canvas id="chartIncassi" height="200" style="margin-top:20px;"></canvas>
-    <canvas id="chartConcertiAnno" height="200" style="margin-top:20px;"></canvas>
+
+  <div class="toolbar-grid">
+    <button class="toolbar-btn accent" onclick="exportExcel()">📄 Excel</button>
+    <button class="toolbar-btn accent" onclick="exportPDF()">🖨 PDF</button>
+    <button class="toolbar-btn" onclick="backupDati()">💾 Backup</button>
+    <button class="toolbar-btn" onclick="ripristinaDati()">📂 Ripristina</button>
   </div>
+
+  <div class="report-kpi">
+    <div class="kpi-card kpi-green"><span class="kpi-val" id="totIncassi">0€</span><span class="kpi-lbl">Entrate</span></div>
+    <div class="kpi-card kpi-red"><span class="kpi-val" id="totSpese">0€</span><span class="kpi-lbl">Spese</span></div>
+    <div class="kpi-card kpi-blue"><span class="kpi-val" id="totUtile">0€</span><span class="kpi-lbl">Saldo</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><h3>📅 Per Anno</h3></div>
+    <div id="riepilogoConcertiAnno"></div>
+  </div>
+
+  <div class="card">
+    <div class="chart-title">Incassi per Anno</div>
+    <canvas id="chartIncassi" height="200"></canvas>
+    <div class="chart-title">Concerti per Anno</div>
+    <canvas id="chartConcertiAnno" height="200"></canvas>
+  </div>
+
 </section>
 
 <!-- MODALI -->
-<div class="modal" id="modalConcerto">
+<div class="modal" id="modalConcerto" onclick="handleModalBg(event,'modalConcerto')">
   <div class="modal-content">
-    <div class="modal-header">
-      <button class="primary small" onclick="saveConcerto()">💾 Salva</button>
-      <button class="delete small" onclick="deleteConcertoModal()">🗑 Cancella</button>
-      <button class="small" onclick="closeModal('modalConcerto')">❌ Chiudi</button>
-    </div>
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="titleModalConcerto">Nuovo Concerto</div>
     <div class="modal-body">
-      <input id="c_data" type="date">
-      <input id="c_paese" placeholder="Paese">
-      <input id="c_via" placeholder="Via">
-      <input id="c_locale" placeholder="Locale">
-      <input id="c_incasso" type="number" placeholder="Incasso €">
+      <div class="input-group"><div class="input-label">Data</div><input id="c_data" type="date"></div>
+      <div class="input-group"><div class="input-label">Paese</div><input id="c_paese" type="text" placeholder="es. Italia"></div>
+      <div class="input-group"><div class="input-label">Via / Indirizzo</div><input id="c_via" type="text" placeholder="es. Via Roma 1"></div>
+      <div class="input-group"><div class="input-label">Locale / Venue</div><input id="c_locale" type="text" placeholder="es. Alcatraz"></div>
+      <div class="input-group"><div class="input-label">Incasso €</div><input id="c_incasso" type="number" placeholder="0.00" step="0.01" min="0"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modalConcerto')">Annulla</button>
+      <button class="btn btn-delete" onclick="deleteConcertoModal()">🗑</button>
+      <button class="btn btn-primary" onclick="saveConcerto()">💾 Salva</button>
     </div>
   </div>
 </div>
 
-<div class="modal" id="modalSpesa">
+<div class="modal" id="modalSpesa" onclick="handleModalBg(event,'modalSpesa')">
   <div class="modal-content">
-    <div class="modal-header">
-      <button class="primary small" onclick="saveSpesa()">💾 Salva</button>
-      <button class="delete small" onclick="deleteSpesaModal()">🗑 Cancella</button>
-      <button class="small" onclick="closeModal('modalSpesa')">❌ Chiudi</button>
-    </div>
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="titleModalSpesa">Nuova Spesa</div>
     <div class="modal-body">
-      <input id="s_data" type="date">
-      <input id="s_desc" placeholder="Descrizione">
-      <input id="s_note" placeholder="Note">
-      <input id="s_importo" type="number" placeholder="Importo">
+      <div class="input-group"><div class="input-label">Data</div><input id="s_data" type="date"></div>
+      <div class="input-group"><div class="input-label">Descrizione</div><input id="s_desc" type="text" placeholder="es. Trasporto"></div>
+      <div class="input-group"><div class="input-label">Note</div><input id="s_note" type="text" placeholder="Dettagli aggiuntivi"></div>
+      <div class="input-group"><div class="input-label">Importo €</div><input id="s_importo" type="number" placeholder="0.00" step="0.01" min="0"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modalSpesa')">Annulla</button>
+      <button class="btn btn-delete" onclick="deleteSpesaModal()">🗑</button>
+      <button class="btn btn-primary" onclick="saveSpesa()">💾 Salva</button>
     </div>
   </div>
 </div>
 
-<!-- Input nascosto per ripristino dati -->
+<!-- Hidden file input -->
 <input type="file" id="fileInput" style="display:none" accept=".json">
+
+<!-- Bottom Nav -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" id="btnHome" onclick="showTab('home')">
+    <span class="nav-icon">🏠</span><span>Home</span>
+  </button>
+  <button class="nav-btn" id="btnConcerti" onclick="showTab('concerti')">
+    <span class="nav-icon">🎵</span><span>Concerti</span>
+  </button>
+  <button class="nav-btn" id="btnAcquisti" onclick="showTab('acquisti')">
+    <span class="nav-icon">💸</span><span>Spese</span>
+  </button>
+  <button class="nav-btn" id="btnReport" onclick="showTab('report')">
+    <span class="nav-icon">📊</span><span>Report</span>
+  </button>
+</nav>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
-// Dati
-let concerti = JSON.parse(localStorage.getItem("concerti")||"[]");
-let spese = JSON.parse(localStorage.getItem("spese")||"[]");
+
+// ===== DATI =====
+let concerti = JSON.parse(localStorage.getItem("concerti") || "[]");
+let spese = JSON.parse(localStorage.getItem("spese") || "[]");
 let editingConcertoIndex = null;
 let editingSpesaIndex = null;
+let filterConcertiAnno = "tutti";
+let filterSpeseAnno = "tutti";
+let chartIncassiInstance = null;
+let chartConcertiInstance = null;
 
-// Navigazione
-function showTab(tab){
-  ["home","concerti","acquisti","report"].forEach(t=>document.getElementById(t).style.display="none");
-  document.getElementById(tab).style.display="block";
-  ["btnHome","btnConcerti","btnAcquisti","btnReport"].forEach(b=>document.getElementById(b).classList.remove("active"));
-  if(tab=="home") btnHome.classList.add("active");
-  if(tab=="concerti") btnConcerti.classList.add("active");
-  if(tab=="acquisti") btnAcquisti.classList.add("active");
-  if(tab=="report") btnReport.classList.add("active");
+// ===== NAVIGAZIONE =====
+function showTab(tab) {
+  ["home","concerti","acquisti","report"].forEach(t => {
+    document.getElementById(t).style.display = "none";
+  });
+  document.getElementById(tab).style.display = "block";
+  ["btnHome","btnConcerti","btnAcquisti","btnReport"].forEach(b =>
+    document.getElementById(b).classList.remove("active")
+  );
+  const map = { home:"btnHome", concerti:"btnConcerti", acquisti:"btnAcquisti", report:"btnReport" };
+  document.getElementById(map[tab]).classList.add("active");
   render();
+  window.scrollTo(0, 0);
 }
 
-// MODALI
-function openModal(id){ document.getElementById(id).style.display="flex"; }
-function closeModal(id){ document.getElementById(id).style.display="none"; render(); }
+// ===== MODALI =====
+function openModal(id) {
+  const m = document.getElementById(id);
+  m.style.display = "flex";
+  requestAnimationFrame(() => m.classList.add("open"));
+}
+function closeModal(id) {
+  const m = document.getElementById(id);
+  m.classList.remove("open");
+  setTimeout(() => { m.style.display = "none"; }, 50);
+  render();
+}
+function handleModalBg(e, id) {
+  if (e.target === document.getElementById(id)) closeModal(id);
+}
 
-// Concerti
-function openModalConcerto(index=null){
-  editingConcertoIndex=index;
-  if(index!==null){
-    let c=concerti[index];
-    c_data.value=c.data; c_paese.value=c.paese; c_via.value=c.via; c_locale.value=c.locale; c_incasso.value=c.incasso.toFixed(2);
-  } else { c_data.value=c_paese.value=c_via.value=c_locale.value=c_incasso.value=''; }
+// ===== CONCERTI =====
+function openModalConcerto(index = null) {
+  editingConcertoIndex = index;
+  const isNew = index === null;
+  document.getElementById("titleModalConcerto").textContent = isNew ? "Nuovo Concerto" : "Modifica Concerto";
+  document.querySelector("#modalConcerto .btn-delete").style.display = isNew ? "none" : "block";
+
+  if (!isNew) {
+    let c = concerti[index];
+    c_data.value = c.data;
+    c_paese.value = c.paese;
+    c_via.value = c.via;
+    c_locale.value = c.locale;
+    c_incasso.value = c.incasso.toFixed(2);
+  } else {
+    c_data.value = c_paese.value = c_via.value = c_locale.value = c_incasso.value = "";
+  }
   openModal("modalConcerto");
 }
-function saveConcerto(){
-  let obj={data:c_data.value,paese:c_paese.value,via:c_via.value,locale:c_locale.value,incasso:Number(c_incasso.value)};
-  if(editingConcertoIndex!==null) concerti[editingConcertoIndex]=obj;
+
+function saveConcerto() {
+  if (!c_data.value || !c_locale.value) { alert("Data e Locale sono obbligatori."); return; }
+  let obj = {
+    data: c_data.value,
+    paese: c_paese.value,
+    via: c_via.value,
+    locale: c_locale.value,
+    incasso: Math.abs(Number(c_incasso.value)) || 0
+  };
+  if (editingConcertoIndex !== null) concerti[editingConcertoIndex] = obj;
   else concerti.push(obj);
-  concerti.sort((a,b)=> new Date(b.data)-new Date(a.data)); // decrescente
-  closeModal("modalConcerto"); save();
-}
-function deleteConcertoModal(){
-  if(editingConcertoIndex!==null) concerti.splice(editingConcertoIndex,1);
-  closeModal("modalConcerto"); save();
+  concerti.sort((a, b) => new Date(b.data) - new Date(a.data));
+  closeModal("modalConcerto");
+  save();
 }
 
-// Spese negative
-function openModalSpesa(index=null){
-  editingSpesaIndex=index;
-  if(index!==null){
-    let s=spese[index];
-    s_data.value=s.data; s_desc.value=s.desc; s_note.value=s.note; s_importo.value=Math.abs(s.importo).toFixed(2);
-  } else { s_data.value=s_desc.value=s_note.value=s_importo.value=''; }
+function deleteConcertoModal() {
+  if (editingConcertoIndex !== null && confirm("Eliminare questo concerto?")) {
+    concerti.splice(editingConcertoIndex, 1);
+    closeModal("modalConcerto");
+    save();
+  }
+}
+
+// ===== SPESE =====
+function openModalSpesa(index = null) {
+  editingSpesaIndex = index;
+  const isNew = index === null;
+  document.getElementById("titleModalSpesa").textContent = isNew ? "Nuova Spesa" : "Modifica Spesa";
+  document.querySelector("#modalSpesa .btn-delete").style.display = isNew ? "none" : "block";
+
+  if (!isNew) {
+    let s = spese[index];
+    s_data.value = s.data;
+    s_desc.value = s.desc;
+    s_note.value = s.note;
+    s_importo.value = Math.abs(s.importo).toFixed(2);
+  } else {
+    s_data.value = s_desc.value = s_note.value = s_importo.value = "";
+  }
   openModal("modalSpesa");
 }
-function saveSpesa(){
-  let importo = Number(s_importo.value);
-  if(importo>0) importo=-importo;
-  let obj={data:s_data.value,desc:s_desc.value,note:s_note.value,importo:importo};
-  if(editingSpesaIndex!==null) spese[editingSpesaIndex]=obj;
+
+function saveSpesa() {
+  if (!s_data.value || !s_desc.value) { alert("Data e Descrizione sono obbligatorie."); return; }
+  let importo = -Math.abs(Number(s_importo.value) || 0);
+  let obj = { data: s_data.value, desc: s_desc.value, note: s_note.value, importo };
+  if (editingSpesaIndex !== null) spese[editingSpesaIndex] = obj;
   else spese.push(obj);
-  spese.sort((a,b)=> new Date(b.data)-new Date(a.data)); // decrescente
-  closeModal("modalSpesa"); save();
-}
-function deleteSpesaModal(){
-  if(editingSpesaIndex!==null) spese.splice(editingSpesaIndex,1);
-  closeModal("modalSpesa"); save();
+  spese.sort((a, b) => new Date(b.data) - new Date(a.data));
+  closeModal("modalSpesa");
+  save();
 }
 
-// Render
-function renderConcerti(){
-  let html="<tr><th>Data</th><th>Paese</th><th>Locale</th><th class='right'>Incasso</th></tr>";
-  concerti.forEach((c,i)=>{ html+=`<tr onclick="openModalConcerto(${i})"><td>${c.data}</td><td>${c.paese}</td><td>${c.locale}</td><td class='right'>${c.incasso.toFixed(2)}€</td></tr>`; });
-  concertiTable.innerHTML=html;
-}
-function renderSpese(){
-  let html="<tr><th>Data</th><th>Descrizione</th><th class='right'>Importo</th></tr>";
-  spese.forEach((s,i)=>{ html+=`<tr onclick="openModalSpesa(${i})"><td>${s.data}</td><td>${s.desc}</td><td class='right'>${s.importo.toFixed(2)}€</td></tr>`; });
-  speseTable.innerHTML=html;
-}
-function renderReport(){
-  let incassi = concerti.reduce((s,c)=>s+c.incasso,0);
-  let uscite = spese.reduce((s,c)=>s+c.importo,0);
-  let saldo = incassi + uscite;
-  totIncassi.innerText = "Totale Entrate: " + incassi.toFixed(2) + "€";
-  totSpese.innerText = "Totale Spese: " + uscite.toFixed(2) + "€";
-  totUtile.innerText = "Saldo Netto: " + saldo.toFixed(2) + "€";
-
-  // Concerti per anno
-  let map={};
-  concerti.forEach(c=>{ let a=new Date(c.data).getFullYear(); if(!map[a]) map[a]=0; map[a]++; });
-  let html="<h4>Concerti per anno</h4>";
-  Object.keys(map).sort().forEach(a=>{ html+=`<div>${a}: ${map[a]} concerti</div>`; });
-  riepilogoConcertiAnno.innerHTML=html;
+function deleteSpesaModal() {
+  if (editingSpesaIndex !== null && confirm("Eliminare questa spesa?")) {
+    spese.splice(editingSpesaIndex, 1);
+    closeModal("modalSpesa");
+    save();
+  }
 }
 
-function save(){
-  localStorage.setItem("concerti",JSON.stringify(concerti));
-  localStorage.setItem("spese",JSON.stringify(spese));
+// ===== FILTRI =====
+function getAnni(arr) {
+  const anni = [...new Set(arr.map(x => new Date(x.data).getFullYear()))].sort((a,b)=>b-a);
+  return anni;
+}
+
+function buildFilterChips(containerId, arr, currentAnno, setFn) {
+  const c = document.getElementById(containerId);
+  const anni = getAnni(arr);
+  let html = `<div class="filter-chip ${currentAnno==='tutti'?'active':''}" onclick="${setFn}('tutti',this)">Tutti</div>`;
+  anni.forEach(a => {
+    html += `<div class="filter-chip ${currentAnno==a?'active':''}" onclick="${setFn}('${a}',this)">${a}</div>`;
+  });
+  c.innerHTML = html;
+}
+
+function setFilterConcerti(anno, el) {
+  filterConcertiAnno = anno == 'tutti' ? 'tutti' : Number(anno);
+  document.querySelectorAll('#filterConcerti .filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderConcerti();
+}
+
+function setFilterSpese(anno, el) {
+  filterSpeseAnno = anno == 'tutti' ? 'tutti' : Number(anno);
+  document.querySelectorAll('#filterSpese .filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderSpese();
+}
+
+// ===== RENDER =====
+function fmtDate(d) {
+  if (!d) return "";
+  const parts = d.split("-");
+  if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  return d;
+}
+function fmtEuro(n) {
+  return (Math.abs(n) >= 1000 ? Math.round(n).toLocaleString('it-IT') : n.toFixed(0)) + "€";
+}
+
+function renderConcerti() {
+  buildFilterChips("filterConcerti", concerti, filterConcertiAnno, "setFilterConcerti");
+  const filtered = filterConcertiAnno === 'tutti'
+    ? concerti
+    : concerti.filter(c => new Date(c.data).getFullYear() === filterConcertiAnno);
+
+  const body = document.getElementById("concertiBody");
+  const foot = document.getElementById("concertiFoot");
+  const empty = document.getElementById("concertiEmpty");
+
+  if (filtered.length === 0) {
+    body.innerHTML = ""; foot.innerHTML = "";
+    empty.style.display = "block";
+    return;
+  }
+  empty.style.display = "none";
+
+  body.innerHTML = filtered.map(c => {
+    const i = concerti.indexOf(c);
+    return `<tr onclick="openModalConcerto(${i})">
+      <td class="td-muted">${fmtDate(c.data)}</td>
+      <td>${c.locale}</td>
+      <td class="td-muted">${c.paese}</td>
+      <td class="td-right td-green">${fmtEuro(c.incasso)}</td>
+    </tr>`;
+  }).join("");
+
+  const totale = filtered.reduce((s, c) => s + c.incasso, 0);
+  foot.innerHTML = `<tr class="tfoot">
+    <td colspan="3">${filtered.length} concerti</td>
+    <td class="td-right">${fmtEuro(totale)}</td>
+  </tr>`;
+}
+
+function renderSpese() {
+  buildFilterChips("filterSpese", spese, filterSpeseAnno, "setFilterSpese");
+  const filtered = filterSpeseAnno === 'tutti'
+    ? spese
+    : spese.filter(s => new Date(s.data).getFullYear() === filterSpeseAnno);
+
+  const body = document.getElementById("speseBody");
+  const foot = document.getElementById("speseFoot");
+  const empty = document.getElementById("speseEmpty");
+
+  if (filtered.length === 0) {
+    body.innerHTML = ""; foot.innerHTML = "";
+    empty.style.display = "block";
+    return;
+  }
+  empty.style.display = "none";
+
+  body.innerHTML = filtered.map(s => {
+    const i = spese.indexOf(s);
+    return `<tr onclick="openModalSpesa(${i})">
+      <td class="td-muted">${fmtDate(s.data)}</td>
+      <td>${s.desc}</td>
+      <td class="td-muted">${s.note}</td>
+      <td class="td-right td-red">${s.importo.toFixed(2)}€</td>
+    </tr>`;
+  }).join("");
+
+  const totale = filtered.reduce((s, x) => s + x.importo, 0);
+  foot.innerHTML = `<tr class="tfoot">
+    <td colspan="3">${filtered.length} spese</td>
+    <td class="td-right" style="color:var(--red)">${totale.toFixed(2)}€</td>
+  </tr>`;
+}
+
+function renderReport() {
+  const incassi = concerti.reduce((s, c) => s + c.incasso, 0);
+  const uscite = spese.reduce((s, x) => s + x.importo, 0);
+  const saldo = incassi + uscite;
+
+  document.getElementById("totIncassi").textContent = fmtEuro(incassi);
+  document.getElementById("totSpese").textContent = fmtEuro(uscite);
+  const utileEl = document.getElementById("totUtile");
+  utileEl.textContent = fmtEuro(saldo);
+  utileEl.style.color = saldo >= 0 ? "var(--green)" : "var(--red)";
+  const kpiSaldo = utileEl.closest(".kpi-card");
+  if (kpiSaldo) {
+    kpiSaldo.className = "kpi-card " + (saldo >= 0 ? "kpi-green" : "kpi-red");
+  }
+
+  // Riepilogo per anno
+  const mapAnno = {};
+  concerti.forEach(c => {
+    const a = new Date(c.data).getFullYear();
+    if (!mapAnno[a]) mapAnno[a] = { concerti: 0, incasso: 0, spese: 0 };
+    mapAnno[a].concerti++;
+    mapAnno[a].incasso += c.incasso;
+  });
+  spese.forEach(s => {
+    const a = new Date(s.data).getFullYear();
+    if (!mapAnno[a]) mapAnno[a] = { concerti: 0, incasso: 0, spese: 0 };
+    mapAnno[a].spese += s.importo;
+  });
+
+  let html = "";
+  Object.keys(mapAnno).sort().reverse().forEach(a => {
+    const d = mapAnno[a];
+    const saldoA = d.incasso + d.spese;
+    html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);">
+      <div>
+        <strong style="color:var(--orange)">${a}</strong>
+        <span style="color:var(--text-muted);font-size:13px;margin-left:8px">${d.concerti} concerti</span>
+      </div>
+      <div style="text-align:right;font-size:13px">
+        <span style="color:var(--green)">${fmtEuro(d.incasso)}</span>
+        <span style="color:var(--text-muted);margin:0 4px">/</span>
+        <span style="color:${saldoA>=0?'var(--green)':'var(--red)'}">${fmtEuro(saldoA)} saldo</span>
+      </div>
+    </div>`;
+  });
+  document.getElementById("riepilogoConcertiAnno").innerHTML = html || "<div style='color:var(--text-muted);padding:8px'>Nessun dato</div>";
+
+  // Charts
+  renderCharts(mapAnno);
+}
+
+function renderCharts(mapAnno) {
+  const anni = Object.keys(mapAnno).sort();
+  const incassiData = anni.map(a => mapAnno[a].incasso);
+  const concertiData = anni.map(a => mapAnno[a].concerti);
+
+  const chartOpts = (label, data, color) => ({
+    type: "bar",
+    data: {
+      labels: anni,
+      datasets: [{ label, data, backgroundColor: color, borderRadius: 8, borderSkipped: false }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => " " + ctx.raw + (label.includes("€") ? "€" : "") } }
+      },
+      scales: {
+        x: { ticks: { color: "#888" }, grid: { color: "rgba(255,255,255,0.05)" } },
+        y: { ticks: { color: "#888" }, grid: { color: "rgba(255,255,255,0.05)" } }
+      }
+    }
+  });
+
+  if (chartIncassiInstance) chartIncassiInstance.destroy();
+  chartIncassiInstance = new Chart(document.getElementById("chartIncassi"), chartOpts("Incassi €", incassiData, "rgba(255,107,0,0.8)"));
+
+  if (chartConcertiInstance) chartConcertiInstance.destroy();
+  chartConcertiInstance = new Chart(document.getElementById("chartConcertiAnno"), chartOpts("Concerti", concertiData, "rgba(45,179,74,0.8)"));
+}
+
+function renderHome() {
+  const incassi = concerti.reduce((s, c) => s + c.incasso, 0);
+  const saldo = incassi + spese.reduce((s, x) => s + x.importo, 0);
+  document.getElementById("hs-concerti").textContent = concerti.length;
+  document.getElementById("hs-incasso").textContent = fmtEuro(incassi);
+  const sEl = document.getElementById("hs-saldo");
+  sEl.textContent = fmtEuro(saldo);
+  sEl.style.color = saldo >= 0 ? "var(--green)" : "var(--red)";
+}
+
+function save() {
+  localStorage.setItem("concerti", JSON.stringify(concerti));
+  localStorage.setItem("spese", JSON.stringify(spese));
   render();
 }
-function render(){ renderConcerti(); renderSpese(); renderReport(); }
-render();
 
-// EXPORT
-function exportExcel(){
-  let rows=[["Data","Tipo","Descrizione","Luogo/Note","Importo"]];
-  concerti.forEach(c=>rows.push([c.data,"Concerto",c.locale,c.paese+" "+c.via,c.incasso.toFixed(2)]));
-  spese.forEach(s=>rows.push([s.data,"Spesa",s.desc,s.note,s.importo.toFixed(2)]));
-  rows.sort((a,b)=> new Date(b[0]) - new Date(a[0]));
-  let csv=rows.map(r=>r.join(";")).join("\n");
-  let blob=new Blob([csv],{type:"text/csv"});
-  let url=URL.createObjectURL(blob);
-  let a=document.createElement("a");
-  a.href=url; a.download="fuoriQuota.csv";
-  a.click();
+function render() {
+  renderConcerti();
+  renderSpese();
+  renderReport();
+  renderHome();
 }
 
-async function exportPDF(){
+render();
+
+// ===== EXPORT =====
+function exportExcel() {
+  let rows = [["Data","Tipo","Descrizione","Luogo/Note","Importo"]];
+  concerti.forEach(c => rows.push([c.data, "Concerto", c.locale, c.paese + " " + c.via, c.incasso.toFixed(2)]));
+  spese.forEach(s => rows.push([s.data, "Spesa", s.desc, s.note, s.importo.toFixed(2)]));
+  rows.sort((a, b) => new Date(b[0]) - new Date(a[0]));
+  const csv = rows.map(r => r.join(";")).join("\n");
+  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a"); a.href = url; a.download = "fuoriQuota.csv"; a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function exportPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
-  doc.setFontSize(18); doc.text("fuoriQuota - Report",105,15,{align:"center"});
-  let y=30; doc.setFontSize(10);
-  let rows=[];
-  concerti.forEach(c=>rows.push([c.data,"Concerto",c.locale,c.paese+" "+c.via,c.incasso.toFixed(2)+"€"]));
-  spese.forEach(s=>rows.push([s.data,"Spesa",s.desc,s.note,s.importo.toFixed(2)+"€"]));
-  rows.sort((a,b)=> new Date(a[0]) - new Date(b[0]));
-  rows.forEach(r=>{ if(y>280){ doc.addPage(); y=20; } doc.text(r.join(" | "),10,y); y+=7; });
+  doc.setFontSize(20); doc.text("fuoriQuota - Report", 105, 16, { align: "center" });
+  doc.setFontSize(10); doc.setTextColor(120);
+  const incassi = concerti.reduce((s, c) => s + c.incasso, 0);
+  const uscite = spese.reduce((s, x) => s + x.importo, 0);
+  doc.text(`Entrate: ${incassi.toFixed(2)}€  |  Spese: ${uscite.toFixed(2)}€  |  Saldo: ${(incassi+uscite).toFixed(2)}€`, 105, 24, { align: "center" });
+  doc.setTextColor(0);
+  let y = 34;
+  let rows = [];
+  concerti.forEach(c => rows.push([c.data, "Concerto", c.locale, c.paese, c.incasso.toFixed(2) + "€"]));
+  spese.forEach(s => rows.push([s.data, "Spesa", s.desc, s.note, s.importo.toFixed(2) + "€"]));
+  rows.sort((a, b) => new Date(b[0]) - new Date(a[0]));
+  doc.setFontSize(9);
+  rows.forEach(r => {
+    if (y > 280) { doc.addPage(); y = 20; }
+    doc.text(r.join("  |  "), 10, y); y += 7;
+  });
   doc.save("fuoriQuota_report.pdf");
 }
 
-// BACKUP DATI
-function backupDati(){
-  const dati={concerti,spese};
-  const blob=new Blob([JSON.stringify(dati)],{type:"application/json"});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement("a");
-  a.href=url;
-  a.download="fuoriQuota_backup.json";
-  a.click();
+function backupDati() {
+  const blob = new Blob([JSON.stringify({ concerti, spese }, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a"); a.href = url; a.download = "fuoriQuota_backup.json"; a.click();
+  URL.revokeObjectURL(url);
 }
 
-// RIPRISTINA DATI
-function ripristinaDati(){
-  const fileInput = document.getElementById("fileInput");
-  fileInput.replaceWith(fileInput.cloneNode(true));
-  const nuovoInput = document.getElementById("fileInput");
-  nuovoInput.addEventListener("change",(event)=>{
-    const file = event.target.files[0];
-    if(!file) return;
+function ripristinaDati() {
+  const fi = document.getElementById("fileInput");
+  fi.replaceWith(fi.cloneNode(true));
+  const nfi = document.getElementById("fileInput");
+  nfi.addEventListener("change", e => {
+    const file = e.target.files[0]; if (!file) return;
     const reader = new FileReader();
-    reader.onload = (e)=>{
-      try{
-        const dati = JSON.parse(e.target.result);
-        if(!dati.concerti || !dati.spese) throw "File non valido";
-        concerti=dati.concerti;
-        spese=dati.spese;
-        save();
-        alert("Dati ripristinati con successo!");
-      }catch(err){ alert("Errore: file non valido."); }
+    reader.onload = ev => {
+      try {
+        const dati = JSON.parse(ev.target.result);
+        if (!dati.concerti || !dati.spese) throw "File non valido";
+        concerti = dati.concerti; spese = dati.spese; save();
+        alert("✅ Dati ripristinati con successo!");
+      } catch { alert("❌ Errore: file non valido."); }
     };
     reader.readAsText(file);
-    nuovoInput.value="";
+    nfi.value = "";
   });
-  nuovoInput.click();
+  nfi.click();
+}
+
+// ===== SERVICE WORKER =====
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js')
+    .then(() => console.log("SW registrato"))
+    .catch(err => console.log("SW error:", err));
 }
 </script>
-
 </body>
 </html>
