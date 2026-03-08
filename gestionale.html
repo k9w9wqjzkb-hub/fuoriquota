@@ -658,7 +658,7 @@ function showTab(tab) {
   ["home","concerti","acquisti","report"].forEach(t => {
     document.getElementById(t).style.display = "none";
   });
-  document.getElementById(tab).style.display = "block";
+  document.getElementById(tab).style.display = tab === "home" ? "flex" : "block";
   ["btnHome","btnConcerti","btnAcquisti","btnReport"].forEach(b =>
     document.getElementById(b).classList.remove("active")
   );
